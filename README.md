@@ -47,26 +47,7 @@ This project is a web application that uses Leaflet.js to display a map. The app
 1. Start the frontend development server:
 
     ```sh
-    cd frontend
     npm start
     ```
 
 3. Open your browser and navigate to `http://localhost:3000`.
-
-## Project Structure
-
-    ├── leaflet-samm/
-    │ ├── node_modules/
-    │ ├── public/
-    │ │ └── index.html
-    │ ├── src/
-    │ │ ├── components/
-    │ │ │ └── Map.js
-    │ │ ├── App.js
-    │ │ ├── index.js
-    │ │ └── ...
-    │ ├── package.json
-    │ └── ...
-    │
-    ├── README.md
-    └── .gitignore
