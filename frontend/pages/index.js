@@ -1,14 +1,6 @@
 // pages/index.js
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "@/services/firebase.config";
 import PointsTable from "@/components/PointsTable";
 import ConfirmationModal from "@/components/ConfirmationModal";
 
@@ -18,20 +10,6 @@ const MapWrapper = dynamic(() => import("../components/MapWrapper"), {
 });
 
 export default function Home() {
-  // const dummyData = [
-  //   {
-  //     id: 0,
-  //     lat: "37.05612",
-  //     lng: "29.10999",
-  //     datetime: "2021-08-14T06:35:13Z",
-  //   },
-  //   {
-  //     id: 1,
-  //     lat: "33.61441",
-  //     lng: "32.29111",
-  //     datetime: "2021-08-14T07:22:15Z",
-  //   },
-  // ];
   const [center, setCenter] = useState(); // İstanbul koordinatları
   const [points, setPoints] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(null);
@@ -49,12 +27,11 @@ export default function Home() {
 
   useEffect(() => {
     const fetchPoints = async () => {
-      const querySnapshot = await getDocs(collection(db, "points"));
-      const pointsList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPoints(pointsList);
+      fetch("http://localhost:5000/points/")
+        .then((response) => response.json())
+        .then((data) => {
+          setPoints(data);
+        });
     };
     fetchPoints();
   }, [points]);
@@ -66,13 +43,25 @@ export default function Home() {
       lng: center.lng,
       datetime: new Date().toISOString(),
     };
-    const docRef = await addDoc(collection(db, "points"), newPoint);
-    setPoints([...points, { id: docRef.id, ...newPoint }]);
+    fetch("http://localhost:5000/points/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPoint),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setPoints([...points, data]);
+      });
   };
 
   const handleDeletePoint = async () => {
-    await deleteDoc(doc(db, "points", selectedPoint.id));
-    setPoints(points.filter((point) => point.id !== selectedPoint.id));
+    fetch(`http://localhost:5000/points/${selectedPoint.id}`, {
+      method: "DELETE",
+    }).then(() => {
+      setPoints(points.filter((point) => point.id !== selectedPoint.id));
+    });
   };
 
   const handleDownloadJson = () => {
