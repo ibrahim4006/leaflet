@@ -72,13 +72,13 @@ The backend provides the following API endpoints:
 
 ### Get All Points
 
-- **URL:** `/api/points`
+- **URL:** `/points`
 - **Method:** `GET`
 - **Response:** Array of saved points.
 
 ### Add a Point
 
-- **URL:** `/api/points`
+- **URL:** `/points`
 - **Method:** `POST`
 - **Body:**
   ```json
